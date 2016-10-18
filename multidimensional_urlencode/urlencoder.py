@@ -1,4 +1,7 @@
-import urllib
+try:
+    from urllib.parse import urlencode as urllib_urlencode
+except ImportError:
+    from urllib import urlencode as urllib_urlencode
 
 
 def flatten(d):
@@ -12,9 +15,9 @@ def flatten(d):
     [['a', 'b', 'c']]
     >>> flatten({"a": {"b": {"c": "e"}}})
     [['a', 'b', 'c', 'e']]
-    >>> flatten({"a": {"b": "c", "d": "e"}})
+    >>> sorted(flatten({"a": {"b": "c", "d": "e"}}))
     [['a', 'b', 'c'], ['a', 'd', 'e']]
-    >>> flatten({"a": {"b": "c", "d": "e"}, "b": {"c": "d"}})
+    >>> sorted(flatten({"a": {"b": "c", "d": "e"}, "b": {"c": "d"}}))
     [['a', 'b', 'c'], ['a', 'd', 'e'], ['b', 'c', 'd']]
 
     """
@@ -23,7 +26,7 @@ def flatten(d):
         return [[d]]
 
     returned = []
-    for key, value in d.items():
+    for key, value in list(d.items()):
         # Each key, value is treated as a row.
         nested = flatten(value)
         for nest in nested:
@@ -69,4 +72,4 @@ def urlencode(params):
 
         url_params[name] = value
 
-    return urllib.urlencode(url_params, doseq=True)
+    return urllib_urlencode(url_params, doseq=True)
